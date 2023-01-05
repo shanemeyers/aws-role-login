@@ -14,6 +14,8 @@ An actual usage script is in `wrapper.sh`, passing in two arguments:
 *   Profile name
 *   MFA code
 
+`wrapper.sh` script is available at: [https://github.com/shanemeyers/aws-role-login/blob/master/wrapper.sh](https://github.com/shanemeyers/aws-role-login/blob/master/wrapper.sh)
+
 NOTE: Make sure to include the leading period (`source`) to enable the script
 to loads the final credentials into your current environment. If you don't,
 you'll need to copy/paste from the `export` lines that were printed.
