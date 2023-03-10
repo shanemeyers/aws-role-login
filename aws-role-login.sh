@@ -13,6 +13,7 @@ else
     role_arn=$(aws --profile $1 configure get role_arn)
     region=$(aws --profile $1 configure get region)
     username=$(echo $mfa_arn | sed -e 's#.*/##')
+    duration=$(aws --profile $1 configure get duration_seconds)
 
     aws --profile $source_profile sts get-session-token --serial-number $mfa_arn --token-code $2 > $TMP1
     if [ $? != 0 ] ; then
@@ -24,7 +25,7 @@ else
     export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' $TMP1)
 
     TMP2=`mktemp`
-    aws sts assume-role --role-arn $role_arn --role-session-name $username --duration-seconds 3600 > $TMP2
+    aws sts assume-role --role-arn $role_arn --role-session-name $username --duration-seconds $duration > $TMP2
     if [ $? != 0 ] ; then
         exit 1
     fi

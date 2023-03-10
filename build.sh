@@ -1,5 +1,5 @@
 #!/bin/bash
-AWS_VERSION="2.0.33"
+AWS_VERSION="2.11.1"
 
 docker build --build-arg AWS_VERSION=${AWS_VERSION} -t shanemeyers/aws-role-login:latest .
 docker push shanemeyers/aws-role-login:latest
