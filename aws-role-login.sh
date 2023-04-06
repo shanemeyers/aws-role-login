@@ -15,25 +15,27 @@ else
     username=$(echo $mfa_arn | sed -e 's#.*/##')
     duration=$(aws --profile $1 configure get duration_seconds)
 
-    aws --profile $source_profile sts get-session-token --serial-number $mfa_arn --token-code $2 > $TMP1
-    if [ $? != 0 ] ; then
-        exit 1
+    if [ -z "$duration" ] ; then
+        D="--duration-seconds $duration"
     fi
 
-    export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' $TMP1)
-    export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' $TMP1)
-    export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' $TMP1)
+    aws \
+        --profile $source_profile \
+        sts assume-role \
+        --role-arn $role_arn \
+        --role-session-name $username \
+        $D \
+        --serial-number $mfa_arn \
+        --token-code $2 > $TMP1
 
-    TMP2=`mktemp`
-    aws sts assume-role --role-arn $role_arn --role-session-name $username --duration-seconds $duration > $TMP2
-    if [ $? != 0 ] ; then
-        exit 1
+    if [ $? = 0 ] ; then
+
+        echo 'export AWS_ACCESS_KEY_ID='$(jq -r '.Credentials.AccessKeyId' $TMP1)
+        echo 'export AWS_SECRET_ACCESS_KEY='$(jq -r '.Credentials.SecretAccessKey' $TMP1)
+        echo 'export AWS_SESSION_TOKEN='$(jq -r '.Credentials.SessionToken' $TMP1)
+        echo 'export AWS_DEFAULT_REGION='$region
+        echo '# Expiration: ' $(jq -r '.Credentials.Expiration' $TMP1)
+
+        rm -f $TMP1
     fi
-
-    echo 'export AWS_ACCESS_KEY_ID='$(jq -r '.Credentials.AccessKeyId' $TMP2)
-    echo 'export AWS_SECRET_ACCESS_KEY='$(jq -r '.Credentials.SecretAccessKey' $TMP2)
-    echo 'export AWS_SESSION_TOKEN='$(jq -r '.Credentials.SessionToken' $TMP2)
-    echo 'export AWS_DEFAULT_REGION='$region
-
-    rm -f $TMP1 $TMP2
 fi
