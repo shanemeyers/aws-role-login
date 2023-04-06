@@ -51,3 +51,10 @@ docker run \
     sts get-caller-identity
 ```
 
+## Building
+
+Run once: `docker buildx create --use` then for all further builds, run:
+
+```bash
+GIT_REV=$(git rev-parse --short HEAD) docker buildx bake --progress plain --push
+```

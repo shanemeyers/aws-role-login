@@ -1,5 +1,4 @@
-ARG AWS_VERSION
-FROM amazon/aws-cli:${AWS_VERSION}
+FROM amazon/aws-cli:latest
 
 RUN yum clean metadata \
     && yum install -y jq \
