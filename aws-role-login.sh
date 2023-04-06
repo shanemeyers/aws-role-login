@@ -9,6 +9,10 @@ else
     TMP1=`mktemp`
 
     source_profile=$(aws --profile $1 configure get source_profile)
+    if [ $? != 0 ] ; then
+        exit
+    fi
+
     mfa_arn=$(aws --profile $1 configure get mfa_serial)
     role_arn=$(aws --profile $1 configure get role_arn)
     region=$(aws --profile $1 configure get region)
