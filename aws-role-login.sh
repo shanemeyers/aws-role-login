@@ -19,7 +19,7 @@ else
     username=$(echo $mfa_arn | sed -e 's#.*/##')
     duration=$(aws --profile $1 configure get duration_seconds)
 
-    if [ -z "$duration" ] ; then
+    if ! [ -z "$duration" ] ; then
         D="--duration-seconds $duration"
     fi
 
