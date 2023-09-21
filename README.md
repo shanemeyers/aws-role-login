@@ -24,7 +24,26 @@ you'll need to copy/paste from the `export` lines that were printed.
 . ./wrapper.sh <profile_name> <mfa_code>
 ```
 
-### Example
+### Bash
+
+To make using this tool easier, open your `~/.bashrc` file and add the
+following (adjust the file path as appropriate for your system):
+
+```bash
+alias aws-login='source $HOME/wrapper.sh'
+```
+
+By using this alias, the correct environment variables will be loaded into the shell.
+
+### Examples
+
+```bash
+$ aws-login example 123456
+export AWS_ACCESS_KEY_ID=ASIA...
+export AWS_SECRET_ACCESS_KEY=Hp...
+export AWS_SESSION_TOKEN=IQo...
+export AWS_DEFAULT_REGION=us-east-1
+```
 
 ```bash
 $ . ./wrapper.sh example 123456
