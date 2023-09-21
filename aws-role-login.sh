@@ -1,9 +1,20 @@
 #!/bin/bash
 
-if [ -z "$2" ] ; then
+if ! [ -f /root/.aws/config ] ; then
+    echo "ERROR: ~/.aws/config is missing"
+    exit 2
+fi
+
+if ! [ -f /root/.aws/credentials ] ; then
+    echo "ERROR: ~/.aws/credentials is missing"
+    exit 3
+fi
+
+if [ -z "$1" ] || [ -z "$2" ] ; then
     echo "Need profile_name and MFA code"
     echo "<profile_name> <mfa_code>"
     echo
+    exit 1
 else
 
     TMP1=`mktemp`
